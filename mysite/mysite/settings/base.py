@@ -222,4 +222,5 @@ ALLOWED_GOOGLE_EMAILS = read_account_sheet.read_acount_list()
 SOCIALACCOUNT_ADAPTER = "adapters.CustomSocialAccountAdapter"
 
 
-
+DEBUG = False
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
