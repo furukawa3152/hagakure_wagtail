@@ -1,0 +1,6 @@
+Django>=5.1,<5.2
+wagtail>=6.4,<6.5
+PyJWT
+cryptography
+gspread
+python-dotenv

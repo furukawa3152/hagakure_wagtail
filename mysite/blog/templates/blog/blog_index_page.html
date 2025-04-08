@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+    <!-- ログインボタン追加: -->
+        {% if user.is_authenticated %}
+          <a href="/accounts/logout/">ログアウト</a>
+        {% else %}
+          <a href="/accounts/google/login/">ログイン</a>
+        {% endif %}
+    <!-- ログインボタン追加ここまで: -->
+    <h1>Tag Search</h1>
+
+    <form action="{% pageurl page %}" method="get">
+        <input type="text" name="q" value="{{ search_query }}">
+        <input type="submit" value="Search">
+    </form>
+
+    <h2>{% if search_query %}Results for "{{ search_query }}"{% else %}All Articles{% endif %}</h2>
+
+    {% if blogpages %}
+        {% for blogpage in blogpages %}
+            <article>
+                <h3><a href="{% pageurl blogpage %}">{{ blogpage.title }}</a></h3>
+                <p>{{ blogpage.specific.intro }}</p>
+                <p>Published: {{ blogpage.first_published_at|date:"F j, Y" }}</p>
+            </article>
+
+            <!-- Add this: -->
+            {% with blogpage.main_image as main_image %}
+                {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
+            {% endwith %}
+
+        {% endfor %}
+    {% else %}
+        <p>No articles found.</p>
+    {% endif %}
+{% endblock %}
