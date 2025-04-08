@@ -1,22 +1,25 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
-from django.core.exceptions import PermissionDenied
 from django.conf import settings
+from django.contrib.auth.models import Group
+from django.core.exceptions import PermissionDenied
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
-    def is_open_for_signup(self, request, sociallogin):
-        """
-        Googleログイン時に、許可されたメールアドレスだけ通す
-        """
+    def pre_social_login(self, request, sociallogin):
         email = sociallogin.user.email
 
-        # 個別のメールアドレスリストで制限
-        if hasattr(settings, "ALLOWED_GOOGLE_EMAILS"):
-            if email not in settings.ALLOWED_GOOGLE_EMAILS:
-                raise PermissionDenied("このメールアドレスではログインできません")
+        if email not in settings.ALLOWED_GOOGLE_EMAILS:
+            raise PermissionDenied("このGoogleアカウントではログインできません。")
 
-        # ドメインで制限
-        if hasattr(settings, "ALLOWED_GOOGLE_DOMAIN"):
-            if not email.endswith(f"@{settings.ALLOWED_GOOGLE_DOMAIN}"):
-                raise PermissionDenied("このドメインのメールアドレスのみログイン可能です")
+    def save_user(self, request, sociallogin, form=None):
+        user = super().save_user(request, sociallogin, form)
 
-        return True  # 許可されたユーザーはログイン可能
+        email = user.email
+
+        if email in settings.ALLOWED_GOOGLE_EMAILS:
+            user.is_staff = True
+            user.save()
+
+            editors_group, _ = Group.objects.get_or_create(name="Editors")
+            user.groups.add(editors_group)
+
+        return user
