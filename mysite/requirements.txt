@@ -4,3 +4,4 @@ PyJWT
 cryptography
 gspread
 python-dotenv
+django-allauth
