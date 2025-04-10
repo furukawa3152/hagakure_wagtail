@@ -4,7 +4,8 @@ from django.db import models
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 
 from wagtail.models import Page, Orderable
-from wagtail.fields import RichTextField
+from wagtail.fields import RichTextField, StreamField
+from wagtail import blocks
 from wagtail.search import index
 
 from wagtail.admin.panels import FieldPanel, InlinePanel,  MultiFieldPanel
@@ -12,6 +13,7 @@ from modelcluster.contrib.taggit import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 from django.db.models import Q
 from wagtail.snippets.models import register_snippet
+from wagtailmarkdown.blocks import MarkdownBlock
 
 
 # チャンネルのための追加
@@ -95,7 +97,13 @@ class BlogIndexPage(Page):
 class BlogPage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
-    body = RichTextField(blank=True)
+    body = StreamField([
+        ('rich_text', blocks.RichTextBlock(
+            features=['h2', 'h3', 'bold', 'italic', 'ol', 'ul', 'embed', 'image', 'link', 'document-link', 'code', 'blockquote'],
+            blank=True,
+            label='テキスト')),
+        ('markdown', MarkdownBlock(blank=True, label='マークダウン')),
+    ])
 
     # チャンネル
     channel = models.ForeignKey(
