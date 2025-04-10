@@ -28,6 +28,7 @@
 
         {% block extra_css %}
         {# Override this in templates to add extra stylesheets #}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/dracula.min.css">
         {% endblock %}
     </head>
 
@@ -41,6 +42,8 @@
 
         {% block extra_js %}
         {# Override this in templates to add extra javascript #}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
         {% endblock %}
     </body>
 </html>

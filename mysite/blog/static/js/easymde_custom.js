@@ -8,3 +8,6 @@ window.wagtailMarkdown.options.toolbar = [
     "preview", "side-by-side", "fullscreen", "|",
     "guide"
 ];
+window.wagtailMarkdown.options.renderingConfig = {
+    codeSyntaxHighlighting: true
+};
