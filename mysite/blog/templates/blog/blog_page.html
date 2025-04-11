@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags wagtailmarkdown %}
 
 {% block body_class %}template-blogpage{% endblock %}
 
@@ -10,7 +10,7 @@
 
     <div class="intro">{{ page.intro }}</div>
 
-    {{ page.body|richtext }}
+{% include_block page.body %}
 
     <!-- Add this: -->
     {% for item in page.gallery_images.all %}
