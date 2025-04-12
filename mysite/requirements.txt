@@ -6,3 +6,4 @@ gspread
 python-dotenv
 django-allauth
 wagtail-markdown
+requests
