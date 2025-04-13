@@ -10,7 +10,7 @@
 
     <div class="intro">{{ page.intro }}</div>
 
-{% include_block page.body %}
+    {% include_block page.body %}
 
     <!-- Add this: -->
     {% for item in page.gallery_images.all %}
