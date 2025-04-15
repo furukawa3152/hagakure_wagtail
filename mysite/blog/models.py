@@ -14,7 +14,7 @@ from taggit.models import TaggedItemBase
 from django.db.models import Q
 from wagtail.snippets.models import register_snippet
 from wagtailmarkdown.blocks import MarkdownBlock
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # チャンネルのための追加
 @register_snippet
@@ -38,16 +38,18 @@ class BlogChannel(models.Model):
 class BlogTagIndexPage(Page):
 
     def get_context(self, request):
+        tag_param = request.GET.get('tag', '').strip()
+        tag_list = tag_param.split()
+        tag_query = Q()
+        for tag in tag_list:
+            tag_query |= Q(tags__slug=tag)  # ← name から slug に変更
 
-        # Filter by tag
-        tag = request.GET.get('tag')
-        blogpages = BlogPage.objects.filter(tags__name=tag)
+        blogpages = BlogPage.objects.filter(tag_query).distinct()
 
-        # Update template context
         context = super().get_context(request)
         context['blogpages'] = blogpages
+        context['search_tags'] = tag_list
         return context
-
 
 
 class BlogPageTag(TaggedItemBase):
