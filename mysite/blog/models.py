@@ -139,7 +139,13 @@ class BlogPage(Page):
         return self.like_set.filter(user=user).exists()
 
     # ------いいねボタンここまで
-
+    #
+    def get_first_gallery_image(self):
+        gallery_item = self.gallery_images.first()
+        if gallery_item:
+            return gallery_item.image
+        else:
+            return None
 
 
 class BlogPageGalleryImage(Orderable):

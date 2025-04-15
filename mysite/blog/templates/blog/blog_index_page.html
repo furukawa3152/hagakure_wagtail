@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static wagtailcore_tags %}
-
+{% load wagtailimages_tags %}
 {% block content %}
   <div class="container">
     <h2>このCMSの概要を２行程度でまとめる<br>
@@ -11,7 +11,17 @@
       {% for article in blogpages %}
       <article class="article">
         <div class="article_wrapper">
-         <a href="{{ article.url }}"> <img class="article_img" src="{% static 'images/blog_index_page/article_img.png' %}" alt="" > </a>
+         <a href="{{ article.url }}">
+           <div class="article_img_wrapper">
+            {% with article.get_first_gallery_image as article_img %}
+              {% if article_img %}
+                {% image article_img fill-600x400 class="article_img"%}
+              {% else %}
+                <img class="article_img" src="{% static 'images/blog_index_page/article_img.png' %}" alt="デフォルト記事画像">
+              {% endif %}
+            {% endwith %}
+           </div>
+         </a>
           <a href="{{ article.url }}">
             <h3 class="article_title">{{ article.title }}</h3>
           </a>
