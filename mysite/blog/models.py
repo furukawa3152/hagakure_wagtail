@@ -14,7 +14,7 @@ from taggit.models import TaggedItemBase
 from django.db.models import Q
 from wagtail.snippets.models import register_snippet
 from wagtailmarkdown.blocks import MarkdownBlock
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # チャンネルのための追加
 @register_snippet
@@ -38,16 +38,18 @@ class BlogChannel(models.Model):
 class BlogTagIndexPage(Page):
 
     def get_context(self, request):
+        tag_param = request.GET.get('tag', '').strip()
+        tag_list = tag_param.split()
+        tag_query = Q()
+        for tag in tag_list:
+            tag_query |= Q(tags__slug=tag)  # ← name から slug に変更
 
-        # Filter by tag
-        tag = request.GET.get('tag')
-        blogpages = BlogPage.objects.filter(tags__name=tag)
+        blogpages = BlogPage.objects.filter(tag_query).distinct()
 
-        # Update template context
         context = super().get_context(request)
         context['blogpages'] = blogpages
+        context['search_tags'] = tag_list
         return context
-
 
 
 class BlogPageTag(TaggedItemBase):
@@ -89,7 +91,6 @@ class BlogIndexPage(Page):
 
         # 公開済みの記事のみ取得し、新しい順に並べる
         blogpages = blogpages.live().order_by('-first_published_at')
-
         context['blogpages'] = blogpages
         context['search_query'] = query
         return context
@@ -132,6 +133,7 @@ class BlogPage(Page):
     ]
 
     # いいねボタンの実装
+
     def get_like_count(self):
         return self.like_set.aggregate(total_likes=models.Sum('count'))['total_likes'] or 0
 
@@ -139,7 +141,13 @@ class BlogPage(Page):
         return self.like_set.filter(user=user).exists()
 
     # ------いいねボタンここまで
-
+    #
+    def get_first_gallery_image(self):
+        gallery_item = self.gallery_images.first()
+        if gallery_item:
+            return gallery_item.image
+        else:
+            return None
 
 
 class BlogPageGalleryImage(Orderable):
@@ -150,3 +158,4 @@ class BlogPageGalleryImage(Orderable):
     caption = models.CharField(blank=True, max_length=250)
 
     panels = ["image", "caption"]
+
