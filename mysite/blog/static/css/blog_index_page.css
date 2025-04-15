@@ -77,6 +77,7 @@ h2 {
   text-align: right;
 }
 /* 記事_イメージ画像 */
+/* 縦横比を維持して表示するためにarticle_img_wrapper追加（古川） */
 .article_img_wrapper {
   position: relative;
   width: 100%;
