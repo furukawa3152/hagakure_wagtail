@@ -1,38 +1,105 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load static wagtailcore_tags %}
 
 {% block content %}
-    <!-- ログインボタン追加: -->
-        {% if user.is_authenticated %}
-          <a href="/accounts/logout/">ログアウト</a>
+  <div class="container">
+    <h2>このCMSの概要を２行程度でまとめる<br>
+      テキストテキストテキストテキストテキストテキスト
+    </h2>
+
+    <div class="wrapper">
+      {% for article in blogpages %}
+      <article class="article">
+        <div class="article_wrapper">
+         <a href="{{ article.url }}"> <img class="article_img" src="{% static 'images/blog_index_page/article_img.png' %}" alt="" > </a>
+          <a href="{{ article.url }}">
+            <h3 class="article_title">{{ article.title }}</h3>
+          </a>
+          <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"Y年n月j日" }}</time>
+          <div class="article_contributor">
+            {% if article.owner %}
+              {% if article.owner.wagtail_userprofile.avatar %}
+                <img src="{{ article.owner.wagtail_userprofile.avatar.url }}" alt="{{ article.owner.get_full_name }}">
+              {% else %}
+                <img src="{% static 'images/blog_index_page/user_img.png' %}" alt="デフォルトアイコン">
+              {% endif %}
+            {% endif %}
+            <p>{{ article.owner }}</p>
+          </div>
+          <div class="article_other">
+            <div class="article_like">
+              {% csrf_token %}
+              <button class="likeButton" data-page-id="{{ article.id }}">
+                <svg width="53" height="51" viewBox="0 0 53 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M33.925 10C31.054 10 28.2985 11.3684 26.5 13.5308C24.7015 11.3684 21.946 10 19.075 10C13.993 10 10 14.0883 10 19.2916C10 25.6774 15.61 30.8807 24.1075 38.7869L26.5 41L28.8925 38.77C37.39 30.8807 43 25.6774 43 19.2916C43 14.0883 39.007 10 33.925 10ZM26.665 36.2698L26.5 36.4387L26.335 36.2698C18.481 28.9886 13.3 24.1738 13.3 19.2916C13.3 15.9128 15.775 13.3787 19.075 13.3787C21.616 13.3787 24.091 15.0512 24.9655 17.3657H28.051C28.909 15.0512 31.384 13.3787 33.925 13.3787C37.225 13.3787 39.7 15.9128 39.7 19.2916C39.7 24.1738 34.519 28.9886 26.665 36.2698Z"
+                    fill="#FB737D" />
+                </svg>
+              </button>
+              <span id="likeCount">{{ page.get_like_count }}</span>
+            </div>
+            <div class="article_category">
+              <ul>
+                {% for tag in article.tags.all %}
+                <li><a href="{% pageurl page %}?tag={{ tag }}">{{ tag }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="page">
+      {% if blogpages.has_previous %}
+      <a class="page-prev" href="?page={{ blogpages.previous_page_number }}">前のページへ</a>
+      {% endif %}
+
+      {% for i in blogpages.paginator.page_range %}
+        {% if blogpages.number == i %}
+          <a href="#" class="current">{{ i }}</a>
         {% else %}
-          <a href="/accounts/google/login/">ログイン</a>
+          <a href="?page={{ i }}">{{ i }}</a>
         {% endif %}
-    <!-- ログインボタン追加ここまで: -->
-    <h1>Tag Search</h1>
+      {% endfor %}
 
-    <form action="{% pageurl page %}" method="get">
-        <input type="text" name="q" value="{{ search_query }}">
-        <input type="submit" value="Search">
-    </form>
+      {% if blogpages.has_next %}
+      <a class="page-next" href="?page={{ blogpages.next_page_number }}">次のページへ</a>
+      {% endif %}
+    </div>
+  </div>
+<script>
+  document.querySelectorAll('.likeButton').forEach(button => {
+    button.addEventListener('click', function() {
+      const pageId = this.dataset.pageId;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const likeCountSpan = this.closest('.article_like').querySelector('#likeCount');
 
-    <h2>{% if search_query %}Results for "{{ search_query }}"{% else %}All Articles{% endif %}</h2>
+      fetch(`/like/${pageId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (likeCountSpan) {
+          likeCountSpan.textContent = data.likes;
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  });
+</script>
 
-    {% if blogpages %}
-        {% for blogpage in blogpages %}
-            <article>
-                <h3><a href="{% pageurl blogpage %}">{{ blogpage.title }}</a></h3>
-                <p>{{ blogpage.specific.intro }}</p>
-                <p>Published: {{ blogpage.first_published_at|date:"F j, Y" }}</p>
-            </article>
+{% endblock %}
 
-            <!-- Add this: -->
-            {% with blogpage.main_image as main_image %}
-                {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
-            {% endwith %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blog_index_page.css' %}">
+{% endblock %}
 
-        {% endfor %}
-    {% else %}
-        <p>No articles found.</p>
-    {% endif %}
+{% block extra_js %}
+<script src="{% static 'js/blog_index_page.js' %}"></script>
 {% endblock %}

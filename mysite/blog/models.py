@@ -89,7 +89,6 @@ class BlogIndexPage(Page):
 
         # 公開済みの記事のみ取得し、新しい順に並べる
         blogpages = blogpages.live().order_by('-first_published_at')
-
         context['blogpages'] = blogpages
         context['search_query'] = query
         return context
@@ -132,6 +131,7 @@ class BlogPage(Page):
     ]
 
     # いいねボタンの実装
+
     def get_like_count(self):
         return self.like_set.aggregate(total_likes=models.Sum('count'))['total_likes'] or 0
 
@@ -150,3 +150,4 @@ class BlogPageGalleryImage(Orderable):
     caption = models.CharField(blank=True, max_length=250)
 
     panels = ["image", "caption"]
+
