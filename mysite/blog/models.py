@@ -97,6 +97,10 @@ class BlogIndexPage(Page):
         context['search_query'] = query
         return context
 
+    # 親ページ子ページの制限
+    parent_page_types = ['home.HomePage']
+    subpage_types = ['blog.BlogPage']
+
 class BlogPage(Page):
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
@@ -135,6 +139,10 @@ class BlogPage(Page):
         FieldPanel("body"),
         "gallery_images",
     ]
+
+    # 親ページ子ページの制限
+    parent_page_types = ['blog.BlogIndexPage']
+    subpage_types = []
 
     # いいねボタンの実装
     def get_like_count(self):
