@@ -14,6 +14,7 @@ from taggit.models import TaggedItemBase
 from django.db.models import Q
 from wagtail.snippets.models import register_snippet
 from wagtailmarkdown.blocks import MarkdownBlock
+from wagtail.images.blocks import ImageBlock
 
 
 # チャンネルのための追加
@@ -103,6 +104,7 @@ class BlogPage(Page):
             blank=True,
             label='テキスト')),
         ('markdown', MarkdownBlock(blank=True, label='マークダウン')),
+        ('image', ImageBlock(blank=True, label='画像')),
     ])
 
     # チャンネル
