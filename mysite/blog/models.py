@@ -2,7 +2,6 @@ from django import forms
 from django.db import models
 
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
-from rest_framework.templatetags.rest_framework import highlight_code
 
 from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField, StreamField
