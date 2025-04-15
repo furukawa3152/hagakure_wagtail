@@ -2,6 +2,7 @@ from django import forms
 from django.db import models
 
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
+from rest_framework.templatetags.rest_framework import highlight_code
 
 from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField, StreamField
@@ -15,6 +16,7 @@ from django.db.models import Q
 from wagtail.snippets.models import register_snippet
 from wagtailmarkdown.blocks import MarkdownBlock
 from wagtail.images.blocks import ImageBlock
+from wagtailcodeblock.blocks import CodeBlock
 
 
 # チャンネルのための追加
@@ -105,6 +107,7 @@ class BlogPage(Page):
             label='テキスト')),
         ('markdown', MarkdownBlock(blank=True, label='マークダウン')),
         ('image', ImageBlock(blank=True, label='画像')),
+        ('code', CodeBlock(blank=True, label='コード', default_language='python')),
     ])
 
     # チャンネル

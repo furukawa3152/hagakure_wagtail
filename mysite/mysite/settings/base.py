@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "wagtail.admin",
     "wagtail",
     "wagtailmarkdown",
+    "wagtailcodeblock",
     "modelcluster",
     "taggit",
     "django.contrib.admin",
@@ -225,3 +226,15 @@ SOCIALACCOUNT_ADAPTER = "adapters.CustomSocialAccountAdapter"
 
 DEBUG = False
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+WAGTAIL_CODE_BLOCK_THEME = "okaidia"
+
+WAGTAIL_CODE_BLOCK_LANGUAGES = (
+    ('bash', 'Bash/Shell'),
+    ('css', 'CSS'),
+    ('html', 'HTML'),
+    ('javascript', 'Javascript'),
+    ('json', 'JSON'),
+    ('python', 'Python'),
+    ('sql', 'SQL'),
+)
