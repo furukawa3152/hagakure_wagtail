@@ -2,6 +2,7 @@
 {% load static wagtailcore_tags %}
 {% load wagtailimages_tags %}
 {% block content %}
+<link rel="stylesheet" href="{% static 'css/blog_index_page.css' %}">
   <div class="container">
     <h2>このCMSの概要を２行程度でまとめる<br>
       テキストテキストテキストテキストテキストテキスト
@@ -17,7 +18,7 @@
               {% if article_img %}
                 {% image article_img fill-600x400 class="article_img"%}
               {% else %}
-                <img class="article_img" src="{% static 'images/blog_index_page/article_img.png' %}" alt="デフォルト記事画像">
+                <img class="article_img" src="{% static 'images/blog_index_page/article_no_img.png' %}" alt="デフォルト記事画像">
               {% endif %}
             {% endwith %}
            </div>
@@ -60,24 +61,23 @@
       </article>
       {% endfor %}
     </div>
-
-    <div class="page">
-      {% if blogpages.has_previous %}
-      <a class="page-prev" href="?page={{ blogpages.previous_page_number }}">前のページへ</a>
-      {% endif %}
-
-      {% for i in blogpages.paginator.page_range %}
-        {% if blogpages.number == i %}
-          <a href="#" class="current">{{ i }}</a>
-        {% else %}
-          <a href="?page={{ i }}">{{ i }}</a>
+      <div class="page">
+        {% if blogpages.has_previous %}
+          <a class="page-prev" href="?page={{ blogpages.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">前のページへ</a>
         {% endif %}
-      {% endfor %}
 
-      {% if blogpages.has_next %}
-      <a class="page-next" href="?page={{ blogpages.next_page_number }}">次のページへ</a>
-      {% endif %}
-    </div>
+        {% for i in blogpages.paginator.page_range %}
+          {% if blogpages.number == i %}
+            <a href="#" class="current">{{ i }}</a>
+          {% else %}
+            <a href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ i }}</a>
+          {% endif %}
+        {% endfor %}
+
+        {% if blogpages.has_next %}
+          <a class="page-next" href="?page={{ blogpages.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">次のページへ</a>
+        {% endif %}
+      </div>
   </div>
 <script>
   document.querySelectorAll('.likeButton').forEach(button => {
@@ -104,10 +104,6 @@
   });
 </script>
 
-{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/blog_index_page.css' %}">
 {% endblock %}
 
 {% block extra_js %}

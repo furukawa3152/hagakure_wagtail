@@ -1,0 +1,234 @@
+body {
+    background-color: #fefbf6;
+    font-family: "Zen Maru Gothic", serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #625651;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 784px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 64px;
+}
+
+.string {
+    width: 25%;
+    height: 25%;
+    position: relative;
+    top: 12px;
+    left: 47%;
+    z-index: -1;
+}
+
+.scroll {
+    width: 100%;
+    height: 100%;
+}
+
+.makimaki > img {
+    margin: -8px 0 0 0;
+    width: 100%;
+    height: 100%;
+}
+
+.scroll-fabric {
+    background-image: url("/static/images/blog_page/scroll_pattern.png");
+    background-size: 28%;
+    background-repeat: repeat;
+    max-width: 688px;
+    height: auto;
+    border-top-left-radius: 32px;
+    border-top-right-radius: 32px;
+    margin: 0px 3.07%;
+    padding: 24px 24px 32px 24px;
+
+
+}
+
+.scroll-paper {
+    background-color: #fff;
+    max-width: 640px;
+    height: auto;
+    padding: 24px;
+    position: relative;
+    border-radius: 16px;
+}
+
+.article-wrapper {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.article-wrapper > img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.article-title {
+    margin: 24px 0 4px 0;
+}
+
+.article-tag > ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    align-items: center;
+}
+
+.article-tag {
+    display: inline-block;
+}
+
+.article-tag > ul > li > a {
+    margin: 0;
+    padding: 0 13px;
+    background-color: #EDCF3B;
+    border-radius: 4px;
+    font-size: 8px;
+    text-decoration: none;
+    color: #625651;
+}
+
+.article-info > time {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    margin: -12px 0 0 0;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+
+.author-info > a > img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.author-info > a {
+    text-decoration: none;
+    color: #625651;
+}
+
+.article-body {
+    margin: 32px 0 64px 0;
+}
+
+.article-body > figure {
+    margin: 0;
+}
+
+.article-body > figure > img {
+    margin: 0 auto;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.article-body > figure > figcaption {
+    font-size: 12px;
+    text-align: center;
+}
+
+.article-actions {
+    margin: 32px 0;
+    display: flex;
+    column-gap: 16px;
+}
+
+.article-actions > button {
+    background-color: #EDCF3B;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    padding: 5px 0 0 0;
+}
+
+.author-info-bottom {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    column-gap: 24px;
+}
+
+.author-info-bottom > img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 3;
+}
+
+.author-info-bottom > p {
+    margin: 0;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    align-content: center;
+}
+
+.author-info-bottom > .user-name {
+    font-size: 20px;
+}
+
+.author-info-bottom > .self-introduction {
+    font-size: 10px;
+    color: #555555;
+}
+
+.comment-section {
+    background-color: red;
+    width: 688px;
+    height: 360px;
+}
+
+@media screen and (max-width: 440px) {
+    .scroll-fabric {
+        padding: 16px 16px 24px 16px;
+    }
+
+    .scroll-paper {
+        max-width: 388px;
+
+
+        padding: 16px;
+    }
+
+    .article-wrapper {
+        position: relative;
+    }
+
+    .comment-section {
+        background-color: red;
+        width: 388px;
+        height: 360px;
+    }
+
+    .makimaki > img {
+        display: none;
+    }
+
+    .makimaki {
+        margin: -8px 0 0 -10px;
+        width: 440px;
+        height: 48px;
+        background-image: url("img/makimaki_mini.png");
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
+}
