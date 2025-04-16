@@ -75,6 +75,9 @@ class Like(models.Model):
 # ------いいねボタンここまで
 
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+
 class BlogIndexPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
@@ -91,9 +94,26 @@ class BlogIndexPage(Page):
 
         # 公開済みの記事のみ取得し、新しい順に並べる
         blogpages = blogpages.live().order_by('-first_published_at')
+
+        # --- ここからページネーションの追加 ---
+        page = request.GET.get('page', 1)
+        paginator = Paginator(blogpages, 12)  # 1ページに12記事
+
+        try:
+            blogpages = paginator.page(page)
+        except PageNotAnInteger:
+            # ページ番号が整数でない場合は1ページ目を表示
+            blogpages = paginator.page(1)
+        except EmptyPage:
+            # ページ番号が範囲外の場合は最後のページを表示
+            blogpages = paginator.page(paginator.num_pages)
+        # --- ページネーションここまで ---
+
         context['blogpages'] = blogpages
         context['search_query'] = query
         return context
+
+    
 
 class BlogPage(Page):
     date = models.DateField("Post date")
