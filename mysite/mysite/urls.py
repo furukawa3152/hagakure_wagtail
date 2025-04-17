@@ -12,6 +12,7 @@ from blog.customize import custom_add_subpage  # 編集者権限の非表示機�
 
 from blog import views # いいね
 from home import views as home
+from mysite import views as mysite
 
 urlpatterns = [
     # CMS以外
@@ -23,6 +24,7 @@ urlpatterns = [
     path('term_use/', home.term_use, name='term_use'),
     
     # CMS
+    path('blog_login/', mysite.blog_login, name='blog_login'),
     path('admin/pages/<int:parent_page_id>/add_subpage/', custom_add_subpage, name='wagtailadmin_pages:add_subpage'), # 編集者権限の非表示機能のオーバライド
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
@@ -30,6 +32,10 @@ urlpatterns = [
     path("search/", search_views.search, name="search"),
     path('like/<int:page_id>/', views.like_blogpage, name='like_blogpage'),
     path("accounts/", include("allauth.urls")),  # GoogleログインURLを追加
+    
+    
+    # 404テスト用
+    path("test404/", mysite.test_404),
 ]
 
 
