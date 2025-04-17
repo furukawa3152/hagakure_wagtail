@@ -35,7 +35,7 @@ article{
 
 /* 読み手向け */
 .makimono{
-    background: url(img/article_bg.png) repeat;
+    background: url("/static/image/guidelines/article_bg.png") repeat;
     background-size: 25%;
     max-width: 100%;
     width: 60%;
@@ -47,7 +47,7 @@ article{
 
 /* 書き手向け */
 .y-makimono{
-    background: url(img/article_bg_yellow.png) repeat;
+    background: url("/static/image/guidelines/article_bg_yellow.png") repeat;
     background-size: 25%;
     max-width: 100%;
     width: 60%;
@@ -68,7 +68,7 @@ article{
 /* 巻物ひも */
 .makimono::before,
 .y-makimono::before{
-    background: url(img/string.png) no-repeat;
+    background: url("/static/image/guidelines/string.png") no-repeat;
     width: 269px;
     height: 85px;
     top: -75px;
@@ -78,7 +78,7 @@ article{
 
 /* 巻物まきまき */
 .makimono::after{
-    background: url(img/makimaki_x4.png) no-repeat;
+    background: url("/static/image/guidelines/makimaki_x4.png") no-repeat;
     width: 106.5%;
     height: 55px;
     background-size: contain;
@@ -90,7 +90,7 @@ article{
 
 /* 巻物まきまきー黄色 */
 .y-makimono::after{
-    background: url(img/makimaki_yellow.png) no-repeat;
+    background: url("/static/image/guidelines/makimaki_yellow.png") no-repeat;
     width: 106.5%;
     height: 55px;
     background-size: contain;

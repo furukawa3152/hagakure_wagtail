@@ -24,6 +24,7 @@ urlpatterns = [
     path('term_use/', home.term_use, name='term_use'),
     
     # CMS
+    path('blog_guidelines/', mysite.blog_guidelines, name='blog_guidelines'),
     path('blog_login/', mysite.blog_login, name='blog_login'),
     path('admin/pages/<int:parent_page_id>/add_subpage/', custom_add_subpage, name='wagtailadmin_pages:add_subpage'), # 編集者権限の非表示機能のオーバライド
     path("django-admin/", admin.site.urls),
