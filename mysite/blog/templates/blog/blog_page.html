@@ -1,67 +1,120 @@
 {% extends "base.html" %}
-
-{% load wagtailcore_tags wagtailimages_tags wagtailmarkdown %}
-
-{% block body_class %}template-blogpage{% endblock %}
+{% load static wagtailcore_tags %}
+{% load wagtailimages_tags %}
 
 {% block content %}
-    <h1>{{ page.title }}</h1>
-    <p class="meta">{{ page.date }}</p>
-
-    <div class="intro">{{ page.intro }}</div>
-
-{% include_block page.body %}
-
-    <!-- Add this: -->
-    {% for item in page.gallery_images.all %}
-        <div style="float: inline-start; margin: 10px">
-            {% image item.image fill-320x240 %}
-            <p>{{ item.caption }}</p>
-        </div>
-    {% endfor %}
-
-    <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
-
-    <!-- Add this: -->
-    {% with tags=page.tags.all %}
-        {% if tags %}
-            <div class="tags">
-                <h3>Tags</h3>
-                {% for tag in tags %}
-                    <a href="{% slugurl 'tags' %}?tag={{ tag }}"><button type="button">{{ tag }}</button></a>
+<link rel="stylesheet" href="{% static 'css/blog_page.css' %}">
+<div class="container">
+  <div class="scroll">
+    <img class="string" src="{% static 'images/blog_page/string_x4.png' %}" alt="紐">
+    <div class="scroll-fabric">
+      <div class="scroll-paper">
+        <div class="article-wrapper">
+          {% with page.get_first_gallery_image as page_img %}
+            {% if page_img %}
+              {% image page_img fill-600x400 class="page_img"%}
+            {% else %}
+              <img src="{% static 'images/blog_page/article_no_img.png' %}" alt="メイン画像">
+            {% endif %}
+          {% endwith %}
+          <div class="article-info">
+            <h2 class="article-title">{{ page.title }}</h2>
+            <div class="article-tag">
+              <ul>
+                {% for tag in page.tags.all %}
+                <!--タグ検索機能実装まだのため仮のタグボタン-->
+                  <li><a href="/tags/{{ tag.slug }}/">{{ tag.name }}</a></li>
+                <!--タグ検索機能実装まだ-->
                 {% endfor %}
+              </ul>
             </div>
-        {% endif %}
-    {% endwith %}
+            <time datetime="{{ page.first_published_at|date:'Y-m-d' }}">
+              {{ page.first_published_at|date:"Y年n月j日" }}
+            </time>
+            <div class="author-info">
+              <a href="#">
+              {% if page.owner %}
+                {% if page.owner.wagtail_userprofile.avatar %}
+                  <img src="{{ page.owner.wagtail_userprofile.avatar.url }}" alt="{{ page.owner.get_full_name }}">
+                {% else %}
+                  <img src="{% static 'images/blog_index_page/user_img.png' %}" alt="デフォルトアイコン">
+                {% endif %}
+              {% endif %}
+              </a>
+              <a href="#" class="user-name">{{ page.owner.get_full_name|default:page.owner.username }}</a>
+            </div>
+          </div>
 
+          <div class="article-body">
+            {{ page.body }}
+          </div>
 
-    <!-- Add いいね -->
-    {% csrf_token %}
-    <button id="likeButton" data-page-id="{{ page.id }}">いいね</button>
-    <span id="likeCount">{{ page.get_like_count }}</span>
+          <div class="article-actions">
+            <!-- お気に入りボタン -->
+            <div class="article_like">
+              {% csrf_token %}
+              <button class="likeButton" data-page-id="{{ page.id }}">
+                <svg width="53" height="51" viewBox="0 0 53 51" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M33.925 10C31.054 10 28.2985 11.3684 26.5 13.5308C24.7015 11.3684 21.946 10 19.075 10C13.993 10 10 14.0883 10 19.2916C10 25.6774 15.61 30.8807 24.1075 38.7869L26.5 41L28.8925 38.77C37.39 30.8807 43 25.6774 43 19.2916C43 14.0883 39.007 10 33.925 10ZM26.665 36.2698L26.5 36.4387L26.335 36.2698C18.481 28.9886 13.3 24.1738 13.3 19.2916C13.3 15.9128 15.775 13.3787 19.075 13.3787C21.616 13.3787 24.091 15.0512 24.9655 17.3657H28.051C28.909 15.0512 31.384 13.3787 33.925 13.3787C37.225 13.3787 39.7 15.9128 39.7 19.2916C39.7 24.1738 34.519 28.9886 26.665 36.2698Z"
+                    fill="#FB737D" />
+                </svg>
+              </button>
+              <span id="likeCount">{{ page.get_like_count }}</span>
+            </div>
+            <!-- シェアボタン -->
+            <button class="share">
+              <!-- SVGそのままでOK -->
+              <!-- ... -->
+            </button>
+          </div>
 
-    <script>
-    document.getElementById('likeButton').addEventListener('click', function() {
-        var pageId = this.dataset.pageId;
-        var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+          <div class="author-info-bottom">
+            　　{% if page.owner %}
+                {% if page.owner.wagtail_userprofile.avatar %}
+                  <img src="{{ page.owner.wagtail_userprofile.avatar.url }}" alt="{{ page.owner.get_full_name }}">
+                {% else %}
+                  <img src="{% static 'images/blog_index_page/user_img.png' %}" alt="デフォルトアイコン">
+                {% endif %}
+              {% endif %}
+            <p class="user-name">{{ page.owner.get_full_name|default:page.owner.username }}</p>
+            <p class="self-introduction">{{ page.owner.profile.introduction|default:"ひとこと自己紹介" }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        fetch('/like/' + pageId + '/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'Content-Type': 'application/json',
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('likeCount').textContent = data.likes;
-        })
-        .catch(error => console.error('Error:', error));
+    <div class="makimaki">
+      <img src="{% static 'images/blog_page/makimaki_x4.png' %}" alt="まきまき">
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('.likeButton').forEach(button => {
+    button.addEventListener('click', function() {
+      const pageId = this.dataset.pageId;
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const likeCountSpan = this.closest('.article-actions').querySelector('#likeCount');
+
+      fetch(`/like/${pageId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (likeCountSpan) {
+          likeCountSpan.textContent = data.likes;
+        }
+      })
+      .catch(error => console.error('Error:', error));
     });
+  });
+});
 
-    </script>
-
-    <!-- Add いいね end-->
-
-
+</script>
 {% endblock %}

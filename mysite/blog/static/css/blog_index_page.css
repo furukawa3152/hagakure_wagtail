@@ -32,7 +32,7 @@ h2 {
   height: auto;
   margin-top: 150px;
   padding: 10px;
-  background-image: url(img/article_bg.svg);
+  background-image: url("/static/images/blog_index_page/article_bg.svg");
   border-radius: 20px 20px 0 0;
   position: relative;
 }
@@ -42,14 +42,14 @@ h2 {
   content: "";
 }
 .article::before {
-  background: url(./img/himo.png) no-repeat;
+  background: url("/static/images/blog_index_page/himo.png") no-repeat;
   width: 15%;
   height: 50px;
   top: -50px;
   left: 47%;
 }
 .article::after {
-  background: url(./img/article_img2.png) no-repeat left/100%;
+  background: url("/static/images/blog_index_page/article_img2.png") no-repeat left/100%;
   display: block;
   width: 110%;
   height: 50px;
@@ -157,7 +157,7 @@ h2 {
 /* ページ移動 */
 .page {
   margin: 100px auto 200px;
-  padding: 100px, 0;
+  padding: 100px 0;
   display: flex;
   justify-content: center;
   align-items: baseline;

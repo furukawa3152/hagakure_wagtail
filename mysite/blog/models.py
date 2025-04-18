@@ -85,31 +85,25 @@ class BlogIndexPage(Page):
 
         if query:
             tags = query.split()
-            blogpages = BlogPage.objects.filter(
-                Q(tags__name__in=tags)
-            ).distinct()
+            blogpages = BlogPage.objects.filter(Q(tags__name__in=tags)).distinct()
         else:
-            # 空欄の場合はすべての記事を取得
             blogpages = BlogPage.objects.all()
 
-        # 公開済みの記事のみ取得し、新しい順に並べる
+        # 公開済み & 新しい順に
         blogpages = blogpages.live().order_by('-first_published_at')
 
-        # --- ここからページネーションの追加 ---
-        page = request.GET.get('page', 1)
-        paginator = Paginator(blogpages, 12)  # 1ページに12記事
+        # ✅ ページネーション追加（12件/ページ）
+        paginator = Paginator(blogpages, 12)
+        page = request.GET.get('page')
 
         try:
-            blogpages = paginator.page(page)
+            blogpages_page = paginator.page(page)
         except PageNotAnInteger:
-            # ページ番号が整数でない場合は1ページ目を表示
-            blogpages = paginator.page(1)
+            blogpages_page = paginator.page(1)
         except EmptyPage:
-            # ページ番号が範囲外の場合は最後のページを表示
-            blogpages = paginator.page(paginator.num_pages)
-        # --- ページネーションここまで ---
+            blogpages_page = paginator.page(paginator.num_pages)
 
-        context['blogpages'] = blogpages
+        context['blogpages'] = blogpages_page
         context['search_query'] = query
         return context
 
