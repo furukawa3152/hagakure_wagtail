@@ -34,22 +34,6 @@ class BlogChannel(models.Model):
         verbose_name = "ブログチャンネル"
         verbose_name_plural = "ブログチャンネル"
 
-# タグインデックスのための追加
-class BlogTagIndexPage(Page):
-
-    def get_context(self, request):
-        tag_param = request.GET.get('tag', '').strip()
-        tag_list = tag_param.split()
-        tag_query = Q()
-        for tag in tag_list:
-            tag_query |= Q(tags__slug=tag)  # ← name から slug に変更
-
-        blogpages = BlogPage.objects.filter(tag_query).distinct()
-
-        context = super().get_context(request)
-        context['blogpages'] = blogpages
-        context['search_tags'] = tag_list
-        return context
 
 
 class BlogPageTag(TaggedItemBase):
@@ -81,18 +65,45 @@ from django.db.models import Q
 class BlogIndexPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
+
+        # --- パラメータ取得 ---
+        tag_param = request.GET.get('tag', '').strip()
         query = request.GET.get('q', '').strip()
 
+        # --- クエリビルド ---
+        combined_query = Q()
+
+        # タグ検索（slugベース）
+        if tag_param:
+            tag_list = tag_param.split()
+            tag_query = Q()
+            for tag in tag_list:
+                tag_query |= Q(tags__slug=tag)
+            combined_query &= tag_query
+            context['search_tags'] = tag_list
+        else:
+            context['search_tags'] = []
+
+        # キーワード検索（nameベース：ここではタグ名を検索）
         if query:
-            tags = query.split()
-            blogpages = BlogPage.objects.filter(Q(tags__name__in=tags)).distinct()
+            keyword_list = query.split()
+            keyword_query = Q()
+            for kw in keyword_list:
+                keyword_query |= Q(tags__name__icontains=kw)
+            combined_query &= keyword_query
+            context['search_query'] = query
+        else:
+            context['search_query'] = ''
+
+        # --- フィルタ & 並び順 ---
+        if combined_query:
+            blogpages = BlogPage.objects.filter(combined_query).distinct()
         else:
             blogpages = BlogPage.objects.all()
 
-        # 公開済み & 新しい順に
         blogpages = blogpages.live().order_by('-first_published_at')
 
-        # ✅ ページネーション追加（12件/ページ）
+        # --- ページネーション（12件/ページ） ---
         paginator = Paginator(blogpages, 12)
         page = request.GET.get('page')
 
@@ -104,12 +115,16 @@ class BlogIndexPage(Page):
             blogpages_page = paginator.page(paginator.num_pages)
 
         context['blogpages'] = blogpages_page
-        context['search_query'] = query
         return context
 
     
 
 class BlogPage(Page):
+
+    # 親ページ子ページの制御
+    parent_page_types = ['blog.BlogIndexPage']
+    subpage_types = []
+
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
     body = StreamField([
@@ -132,7 +147,6 @@ class BlogPage(Page):
 
     # タグ
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
-    primary_tag = models.ForeignKey('taggit.Tag', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
     # ... Keep the main_image method and search_fields definition. Then modify the content_panels:
     content_panels = Page.content_panels + [
