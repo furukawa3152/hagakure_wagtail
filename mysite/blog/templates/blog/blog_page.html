@@ -21,10 +21,8 @@
             <h2 class="article-title">{{ page.title }}</h2>
             <div class="article-tag">
               <ul>
-                {% for tag in page.tags.all %}
-                <!--タグ検索機能実装まだのため仮のタグボタン-->
-                  <li><a href="/tags/{{ tag.slug }}/">{{ tag.name }}</a></li>
-                <!--タグ検索機能実装まだ-->
+                {% for tag in article.tags.all %}
+                <li><a href="{% pageurl page %}?tag={{ tag }}">{{ tag }}</a></li>
                 {% endfor %}
               </ul>
             </div>
