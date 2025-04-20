@@ -19,15 +19,19 @@
           {% endwith %}
           <div class="article-info">
             <h2 class="article-title">{{ page.title }}</h2>
-            <div class="article-tag">
-              <ul>
-                {% for tag in page.tags.all %}
-                <!--タグ検索機能実装まだのため仮のタグボタン-->
-                  <li><a href="/tags/{{ tag.slug }}/">{{ tag.name }}</a></li>
-                <!--タグ検索機能実装まだ-->
-                {% endfor %}
-              </ul>
-            </div>
+
+            {% with tags=page.tags.all %}
+                {% if tags %}
+                    <div class="article-tag">
+                      <ul>
+                        {% for tag in tags %}
+                            <li><a href="{% slugurl 'tags' %}?tag={{ tag }}">{{ tag }}</a></li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
+
             <time datetime="{{ page.first_published_at|date:'Y-m-d' }}">
               {{ page.first_published_at|date:"Y年n月j日" }}
             </time>
