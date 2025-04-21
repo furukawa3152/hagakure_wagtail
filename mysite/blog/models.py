@@ -14,6 +14,10 @@ from taggit.models import TaggedItemBase
 from django.db.models import Q
 from wagtail.snippets.models import register_snippet
 from wagtailmarkdown.blocks import MarkdownBlock
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.core.exceptions import ValidationError
+from wagtail.admin.forms import WagtailAdminPageForm
 from wagtail.images.blocks import ImageBlock
 from wagtailcodeblock.blocks import CodeBlock
 
@@ -36,20 +40,6 @@ class BlogChannel(models.Model):
         verbose_name = "ブログチャンネル"
         verbose_name_plural = "ブログチャンネル"
 
-# タグインデックスのための追加
-class BlogTagIndexPage(Page):
-
-    def get_context(self, request):
-
-        # Filter by tag
-        tag = request.GET.get('tag')
-        blogpages = BlogPage.objects.filter(tags__name=tag)
-
-        # Update template context
-        context = super().get_context(request)
-        context['blogpages'] = blogpages
-        return context
-
 
 
 class BlogPageTag(TaggedItemBase):
@@ -58,6 +48,45 @@ class BlogPageTag(TaggedItemBase):
         related_name='tagged_items',
         on_delete=models.CASCADE
     )
+
+import unicodedata
+
+def count_chars(value):
+    """半角文字を1、全角文字を2としてカウント"""
+    count = 0
+    for char in value:
+        # East Asian Widthプロパティを取得
+        width = unicodedata.east_asian_width(char)
+        count += 2 if width in 'FWA' else 1  # F:Fullwidth, W:Wide, A:Ambiguous
+    return count
+
+class BlogPageForm(WagtailAdminPageForm):
+    def clean_tags(self):
+        tags = self.cleaned_data['tags']
+
+        # タグデータの形式変換
+        if isinstance(tags, str):
+            tag_list = [t.strip() for t in tags.split(',') if t.strip()]
+        elif hasattr(tags, 'all'):
+            tag_list = [t.name for t in tags.all()]
+        else:
+            tag_list = list(tags)
+
+        # 個数制限（4個）
+        if len(tag_list) > 4:
+            self.add_error('tags', 'タグは最大4個まで選択可能です')
+
+        # 文字数制限
+        for tag in tag_list:
+            char_count = count_chars(tag)
+            if char_count > 10:  # 半角10文字/全角5文字換算
+                self.add_error(
+                    'tags',
+                    f'タグ「{tag}」: 半角10文字/全角5文字以内 (現在 {char_count // 2}全角換算)'
+                )
+
+        return tags
+
 
 # いいねボタンの実装
 class Like(models.Model):
@@ -75,25 +104,62 @@ class Like(models.Model):
 # ------いいねボタンここまで
 
 
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
+
 class BlogIndexPage(Page):
     def get_context(self, request):
         context = super().get_context(request)
+
+        # --- パラメータ取得 ---
+        tag_param = request.GET.get('tag', '').strip()
         query = request.GET.get('q', '').strip()
 
-        if query:
-            tags = query.split()
-            blogpages = BlogPage.objects.filter(
-                Q(tags__name__in=tags)
-            ).distinct()
+        # --- クエリビルド ---
+        combined_query = Q()
+
+        # タグ検索（slugベース）
+        if tag_param:
+            tag_list = tag_param.split()
+            tag_query = Q()
+            for tag in tag_list:
+                tag_query |= Q(tags__slug=tag)
+            combined_query &= tag_query
+            context['search_tags'] = tag_list
         else:
-            # 空欄の場合はすべての記事を取得
+            context['search_tags'] = []
+
+        # キーワード検索（nameベース：ここではタグ名を検索）
+        if query:
+            keyword_list = query.split()
+            keyword_query = Q()
+            for kw in keyword_list:
+                keyword_query |= Q(tags__name__icontains=kw)
+            combined_query &= keyword_query
+            context['search_query'] = query
+        else:
+            context['search_query'] = ''
+
+        # --- フィルタ & 並び順 ---
+        if combined_query:
+            blogpages = BlogPage.objects.filter(combined_query).distinct()
+        else:
             blogpages = BlogPage.objects.all()
 
-        # 公開済みの記事のみ取得し、新しい順に並べる
         blogpages = blogpages.live().order_by('-first_published_at')
 
-        context['blogpages'] = blogpages
-        context['search_query'] = query
+        # --- ページネーション（12件/ページ） ---
+        paginator = Paginator(blogpages, 12)
+        page = request.GET.get('page')
+
+        try:
+            blogpages_page = paginator.page(page)
+        except PageNotAnInteger:
+            blogpages_page = paginator.page(1)
+        except EmptyPage:
+            blogpages_page = paginator.page(paginator.num_pages)
+
+        context['blogpages'] = blogpages_page
         return context
 
     # 親ページ子ページの制限
@@ -101,6 +167,21 @@ class BlogIndexPage(Page):
     subpage_types = ['blog.BlogPage']
 
 class BlogPage(Page):
+
+    # 親ページ子ページの制御
+    parent_page_types = ['blog.BlogIndexPage']
+    subpage_types = []
+    base_form_class = BlogPageForm
+
+    def clean(self):
+        super().clean()
+
+        # タイトル文字数制限
+        if len(self.title) > 26:
+            raise ValidationError({
+                'title': 'タイトルは26文字以内で入力してください'
+            })
+
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
     body = StreamField([
@@ -125,7 +206,6 @@ class BlogPage(Page):
 
     # タグ
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
-    primary_tag = models.ForeignKey('taggit.Tag', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
     # ... Keep the main_image method and search_fields definition. Then modify the content_panels:
     content_panels = Page.content_panels + [
@@ -139,11 +219,8 @@ class BlogPage(Page):
         "gallery_images",
     ]
 
-    # 親ページ子ページの制限
-    parent_page_types = ['blog.BlogIndexPage']
-    subpage_types = []
-
     # いいねボタンの実装
+
     def get_like_count(self):
         return self.like_set.aggregate(total_likes=models.Sum('count'))['total_likes'] or 0
 
@@ -152,6 +229,13 @@ class BlogPage(Page):
 
     # ------いいねボタンここまで
 
+    #
+    def get_first_gallery_image(self):
+        gallery_item = self.gallery_images.first()
+        if gallery_item:
+            return gallery_item.image
+        else:
+            return None
 
 
 class BlogPageGalleryImage(Orderable):
@@ -162,3 +246,4 @@ class BlogPageGalleryImage(Orderable):
     caption = models.CharField(blank=True, max_length=250)
 
     panels = ["image", "caption"]
+
