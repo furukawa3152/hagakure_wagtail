@@ -150,6 +150,21 @@ body {
     column-gap: 16px;
 }
 
+.article_like {
+    display: flex;
+    align-items: center;
+}
+
+.article_like > button {
+    background: none;
+    border: none;
+}
+
+.likeButton > svg {
+    display: flex;
+    align-items: center;
+}
+
 .article-actions > button {
     background-color: #EDCF3B;
     border: none;
