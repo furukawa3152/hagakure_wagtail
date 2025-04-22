@@ -18,6 +18,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.core.exceptions import ValidationError
 from wagtail.admin.forms import WagtailAdminPageForm
+from wagtail.images.blocks import ImageBlock
+from wagtailcodeblock.blocks import CodeBlock
 
 
 # チャンネルのための追加
@@ -160,7 +162,9 @@ class BlogIndexPage(Page):
         context['blogpages'] = blogpages_page
         return context
 
-    
+    # 親ページ子ページの制限
+    parent_page_types = ['home.HomePage']
+    subpage_types = ['blog.BlogPage']
 
 class BlogPage(Page):
 
@@ -186,6 +190,8 @@ class BlogPage(Page):
             blank=True,
             label='テキスト')),
         ('markdown', MarkdownBlock(blank=True, label='マークダウン')),
+        ('image', ImageBlock(blank=True, label='画像')),
+        ('code', CodeBlock(blank=True, label='コード', default_language='python')),
     ])
 
     # チャンネル
