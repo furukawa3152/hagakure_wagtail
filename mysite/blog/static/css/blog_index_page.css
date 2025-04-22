@@ -22,6 +22,12 @@ body {
   justify-content: space-between;
 }
 
+.wrapper::after{
+  content:"";
+  display: block;
+  width:30%;
+}
+
 h2 {
   text-align: center;
 }
