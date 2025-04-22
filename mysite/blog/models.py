@@ -237,6 +237,14 @@ class BlogPage(Page):
         else:
             return None
 
+    def get_first_body_image(self):
+        """
+        body内の最初の 'image' ブロックの画像を返す
+        """
+        for block in self.body:
+            if block.block_type == 'image':
+                return block.value  # value自体がImageオブジェクト
+        return None
 
 class BlogPageGalleryImage(Orderable):
     page = ParentalKey(BlogPage, on_delete=models.CASCADE, related_name='gallery_images')

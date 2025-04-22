@@ -10,12 +10,12 @@
     <div class="scroll-fabric">
       <div class="scroll-paper">
         <div class="article-wrapper">
-          {% with page.get_first_gallery_image as page_img %}
-            {% if page_img %}
-              {% image page_img fill-600x400 class="page_img"%}
-            {% else %}
-              <img src="{% static 'images/blog_page/article_no_img.png' %}" alt="メイン画像">
-            {% endif %}
+            {% with page.get_first_body_image as page_img %}
+              {% if page_img %}
+                {% image page_img fill-600x400 class="page_img" %}
+              {% else %}
+                <img src="{% static 'images/blog_page/article_no_img.png' %}" alt="メイン画像">
+              {% endif %}
           {% endwith %}
           <div class="article-info">
             <h2 class="article-title">{{ page.title }}</h2>
