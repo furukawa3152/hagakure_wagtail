@@ -77,7 +77,7 @@
           {% if blogpages.number == i %}
             <span class="current">{{ i }}</span>
           {% else %}
-            <a href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ i }}</a>
+            <a class="page-number" href="?page={{ i }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ i }}</a>
           {% endif %}
         {% endfor %}
 
