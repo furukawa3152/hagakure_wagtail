@@ -127,19 +127,20 @@ body {
     margin: 32px 0 64px 0;
 }
 
-.article-body > figure {
+.article-body > [class^=block] > figure {
     margin: 0;
 }
 
-.article-body > figure > img {
+.article-body > [class^=block] > figure > img {
     margin: 0 auto;
+    height: 100%;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: auto;
     border-radius: 8px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
-.article-body > figure > figcaption {
+.article-body > [class^=block] > figure > figcaption {
     font-size: 12px;
     text-align: center;
 }

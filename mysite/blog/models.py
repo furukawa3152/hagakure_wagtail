@@ -18,8 +18,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.core.exceptions import ValidationError
 from wagtail.admin.forms import WagtailAdminPageForm
-from wagtail.images.blocks import ImageBlock
 from wagtailcodeblock.blocks import CodeBlock
+from .blocks import ImageWithCaptionBlock
 
 
 # チャンネルのための追加
@@ -190,9 +190,9 @@ class BlogPage(Page):
             blank=True,
             label='テキスト')),
         ('markdown', MarkdownBlock(blank=True, label='マークダウン')),
-        ('image', ImageBlock(blank=True, label='画像')),
+        ('image', ImageWithCaptionBlock(blank=True, label='画像')),
         ('code', CodeBlock(blank=True, label='コード', default_language='python')),
-    ])
+    ], use_json_field=True)
 
     # チャンネル
     channel = models.ForeignKey(
@@ -243,7 +243,7 @@ class BlogPage(Page):
         """
         for block in self.body:
             if block.block_type == 'image':
-                return block.value  # value自体がImageオブジェクト
+                return block.value['image']  # valueはStructValue({'image': <Image: title>, 'caption': 'キャプション'})
         return None
 
 class BlogPageGalleryImage(Orderable):
