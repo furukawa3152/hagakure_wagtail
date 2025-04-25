@@ -183,7 +183,6 @@ class BlogPage(Page):
             })
 
     date = models.DateField("Post date")
-    intro = models.CharField(max_length=250)
     body = StreamField([
         ('rich_text', blocks.RichTextBlock(
             features=['h2', 'h3', 'bold', 'italic', 'ol', 'ul', 'embed', 'image', 'link', 'document-link', 'code', 'blockquote'],
@@ -214,7 +213,6 @@ class BlogPage(Page):
             FieldPanel('channel'),
             FieldPanel("tags"),
         ], heading="Blog information"),
-        FieldPanel("intro"),
         FieldPanel("body"),
         "gallery_images",
     ]
