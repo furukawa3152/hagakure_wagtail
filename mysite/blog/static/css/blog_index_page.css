@@ -168,17 +168,21 @@ h2 {
   justify-content: center;
   align-items: baseline;
 }
+
+.page a {
+  color: #625651;
+  text-decoration: none;
+}
+
 .page-number {
   padding: 20px;
-  color: #625651;
 }
+
 .page-number:hover {
   background-color: RGB(98, 86, 81,0.5);
   color: #fff;
   border-radius: 50px;
-  /* transition: ease-in-out 0.1s; */
   transition: 0.1s;
-  text-decoration: none;
   padding: 20px;
   width: 20px;
   height: 20px;
@@ -192,7 +196,6 @@ h2 {
   background-color: #edcf3b;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
   border-radius: 30px;
-  text-decoration: none;
 }
 .page-prev {
   margin-right: 20px;
@@ -206,13 +209,11 @@ h2 {
   background-color: #ffdf42;
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
   border-radius: 30px;
-  text-decoration: none;
 }
 .current {
   background-color: #625651;
   color: #fff !important;
   border-radius: 50px;
-  text-decoration: none;
   padding: 20px;
   width:20px;
   height:20px;
