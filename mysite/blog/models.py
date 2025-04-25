@@ -182,7 +182,6 @@ class BlogPage(Page):
                 'title': 'タイトルは26文字以内で入力してください'
             })
 
-    date = models.DateField("Post date")
     body = StreamField([
         ('rich_text', blocks.RichTextBlock(
             features=['h2', 'h3', 'bold', 'italic', 'ol', 'ul', 'embed', 'image', 'link', 'document-link', 'code', 'blockquote'],
@@ -209,7 +208,6 @@ class BlogPage(Page):
     # ... Keep the main_image method and search_fields definition. Then modify the content_panels:
     content_panels = Page.content_panels + [
         MultiFieldPanel([
-            FieldPanel("date"),
             FieldPanel('channel'),
             FieldPanel("tags"),
         ], heading="Blog information"),
