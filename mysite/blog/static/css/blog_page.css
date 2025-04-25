@@ -3,6 +3,7 @@ body {
     font-family: "Zen Maru Gothic", serif;
     font-weight: 400;
     font-style: normal;
+    font-size: 16px;
     color: #625651;
 }
 
@@ -94,8 +95,8 @@ body {
     margin: 0;
     padding: 0 13px;
     background-color: #EDCF3B;
-    border-radius: 4px;
-    font-size: 8px;
+    border-radius: 8px;
+    font-size: 16px;
     text-decoration: none;
     color: #625651;
 }
@@ -103,7 +104,7 @@ body {
 .article-info > time {
     display: block;
     text-align: right;
-    font-size: 12px;
+    font-size: 16px;
     margin: -12px 0 0 0;
 }
 
@@ -112,7 +113,7 @@ body {
     align-items: center;
     column-gap: 10px;
 }
-
+/* ユーザー情報をリンクにするならこっち
 .author-info > a > img {
     width: 36px;
     height: 36px;
@@ -122,6 +123,23 @@ body {
 .author-info > a {
     text-decoration: none;
     color: #625651;
+    display:flex;
+    align-items: center;
+}
+*/
+
+/* ユーザー情報のリンクなし */
+.author-info > div > img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.author-info > p {
+    text-decoration: none;
+    color: #625651;
+    display:flex;
+    align-items: center;
 }
 
 .article-body {
@@ -167,6 +185,10 @@ body {
     align-items: center;
 }
 
+#likeCount {
+    font-size: 20px;
+}
+
 .article-actions > button {
     background-color: #EDCF3B;
     border: none;
@@ -188,8 +210,6 @@ body {
     border-radius: 50%;
     grid-column-start: 1;
     grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 3;
 }
 
 .author-info-bottom > p {
