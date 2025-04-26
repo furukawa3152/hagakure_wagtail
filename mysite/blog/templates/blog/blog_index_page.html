@@ -62,7 +62,7 @@
       <div class="page">
         {% if blogpages.has_previous %}
           <a class="page-prev" href="?page={{ blogpages.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">前のページへ</a>
-        {% endif %}
+      cd  {% endif %}
 
         {% for i in blogpages.paginator.page_range %}
           {% if blogpages.number == i %}

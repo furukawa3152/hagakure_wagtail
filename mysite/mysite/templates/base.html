@@ -1,49 +1,64 @@
 {% load static wagtailcore_tags wagtailuserbar %}
-
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>
-            {% block title %}
-            {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
-            {% endblock %}
-            {% block title_suffix %}
-            {% wagtail_site as current_site %}
-            {% if current_site and current_site.site_name %}- {{ current_site.site_name }}{% endif %}
-            {% endblock %}
-        </title>
-        {% if page.search_description %}
-        <meta name="description" content="{{ page.search_description }}" />
-        {% endif %}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HAGAKUREプログラミング塾|Scroll{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+</head>
+<body>
 
-        {# Force all links in the live preview panel to be opened in a new tab #}
-        {% if request.in_preview_panel %}
-        <base target="_blank">
-        {% endif %}
+  <header class="header">
+    <div class="header_inner">
 
-        {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/mysite.css' %}">
+<!--      <img src="{% static 'image/base/logo.jpg' %}" alt="ロゴ" class="logo">-->
 
-        {% block extra_css %}
-        {# Override this in templates to add extra stylesheets #}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/dracula.min.css">
-        {% endblock %}
-    </head>
+<!--      <div class="search-bar">-->
+<!--        <input type="text" class="search-input">-->
+<!--        <img src="{% static 'image/base/mag_glass.png' %}" alt="検索" class="search-icon">-->
+<!--      </div>-->
 
-    <body class="{% block body_class %}{% endblock %}">
-        {% wagtailuserbar %}
+      <div class="header-buttons">
+        <a href="http://localhost:8000/accounts/google/login/" class="login-button">
+          <span class="button-text">ログイン</span>
+          <img src="{% static 'image/base/login_icon.png' %}" alt="ログイン">
+        </a>
+      </div>
 
-        {% block content %}{% endblock %}
+      <div class="header_wave">
+        {% for _ in "12345678901234" %}
+          <div class="wave-box"></div>
+        {% endfor %}
+      </div>
 
-        {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/mysite.js' %}"></script>
+    </div>
+  </header>
 
-        {% block extra_js %}
-        {# Override this in templates to add extra javascript #}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-        <script>hljs.highlightAll();</script>
-        {% endblock %}
-    </body>
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="footer_inner">
+
+      <div class="footer_wave">
+        {% for _ in "12345678901234" %}
+          <div class="wave-box"></div>
+        {% endfor %}
+      </div>
+
+      <div class="footer_links">
+        <a href="{% url 'blog_guidelines' %}" class="footer_link">ガイドライン</a>
+      </div>
+
+      <div class="footer_copyright">
+        <p>©HAGAKUREPROGRAMMING塾 SINCE2025</p>
+      </div>
+
+    </div>
+  </footer>
+
+</body>
 </html>
