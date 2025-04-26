@@ -3,6 +3,7 @@ body {
     font-family: "Zen Maru Gothic", serif;
     font-weight: 400;
     font-style: normal;
+    font-size: 16px;
     color: #625651;
 }
 
@@ -39,11 +40,11 @@ body {
     background-image: url("/static/images/blog_page/scroll_pattern.png");
     background-size: 28%;
     background-repeat: repeat;
-    max-width: 688px;
+    max-width: 736px;
     height: auto;
     border-top-left-radius: 32px;
     border-top-right-radius: 32px;
-    margin: 0px 3.07%;
+    margin: 0px 3%;
     padding: 24px 24px 32px 24px;
 
 
@@ -51,7 +52,7 @@ body {
 
 .scroll-paper {
     background-color: #fff;
-    max-width: 640px;
+    max-width: 688px;
     height: auto;
     padding: 24px;
     position: relative;
@@ -65,7 +66,8 @@ body {
 }
 
 .article-wrapper > img {
-    width: 100%;
+    width: auto;
+    height: auto;
     aspect-ratio: 16 / 9;
     border-radius: 8px;
     object-fit: cover;
@@ -93,8 +95,8 @@ body {
     margin: 0;
     padding: 0 13px;
     background-color: #EDCF3B;
-    border-radius: 4px;
-    font-size: 8px;
+    border-radius: 8px;
+    font-size: 16px;
     text-decoration: none;
     color: #625651;
 }
@@ -102,7 +104,7 @@ body {
 .article-info > time {
     display: block;
     text-align: right;
-    font-size: 12px;
+    font-size: 16px;
     margin: -12px 0 0 0;
 }
 
@@ -111,7 +113,7 @@ body {
     align-items: center;
     column-gap: 10px;
 }
-
+/* ユーザー情報をリンクにするならこっち
 .author-info > a > img {
     width: 36px;
     height: 36px;
@@ -121,6 +123,23 @@ body {
 .author-info > a {
     text-decoration: none;
     color: #625651;
+    display:flex;
+    align-items: center;
+}
+*/
+
+/* ユーザー情報のリンクなし */
+.author-info > div > img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+
+.author-info > p {
+    text-decoration: none;
+    color: #625651;
+    display:flex;
+    align-items: center;
 }
 
 .article-body {
@@ -141,7 +160,7 @@ body {
 }
 
 .article-body > [class^=block] > figure > figcaption {
-    font-size: 12px;
+    font-size: 14px;
     text-align: center;
 }
 
@@ -166,6 +185,10 @@ body {
     align-items: center;
 }
 
+#likeCount {
+    font-size: 20px;
+}
+
 .article-actions > button {
     background-color: #EDCF3B;
     border: none;
@@ -187,8 +210,6 @@ body {
     border-radius: 50%;
     grid-column-start: 1;
     grid-column-end: 2;
-    grid-row-start: 1;
-    grid-row-end: 3;
 }
 
 .author-info-bottom > p {
@@ -214,14 +235,25 @@ body {
 }
 
 @media screen and (max-width: 440px) {
+    .container {
+        margin: 0 0 48px 0 ;
+    }
+
+    .string {
+        width: 25%;
+        height: 25%;
+        position: relative;
+        top: 1.2vh;
+        left: 47%;
+        z-index: -1;
+    }
+
     .scroll-fabric {
         padding: 16px 16px 24px 16px;
     }
 
     .scroll-paper {
         max-width: 388px;
-
-
         padding: 16px;
     }
 
@@ -236,15 +268,13 @@ body {
     }
 
     .makimaki > img {
-        display: none;
+        display: block;
     }
 
     .makimaki {
-        margin: -8px 0 0 -10px;
-        width: 440px;
-        height: 48px;
-        background-image: url("img/makimaki_mini.png");
-        background-size: 100%;
-        background-repeat: no-repeat;
+        margin: -8px 0 0 0;
+        padding: 0;
+        width: auto;
+        height: auto;
     }
 }

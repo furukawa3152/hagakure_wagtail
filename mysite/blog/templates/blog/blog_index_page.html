@@ -15,17 +15,11 @@
         <div class="article_wrapper">
           <a href="{{ article.url }}">
             <div class="article_img_wrapper">
-            {% with article.get_first_body_image as article_img %}
-              {% if not article_img %}
-                {% with article.get_first_gallery_image as gallery_img %}
-                  {% if gallery_img %}
-                    {% image gallery_img fill-600x400 class="article_img" %}
-                  {% else %}
-                    <img class="article_img" src="{% static 'images/blog_index_page/article_no_img.png' %}" alt="デフォルト記事画像">
-                  {% endif %}
-                {% endwith %}
+            {% with article.thumbnail as article_img %}
+              {% if article_img %}
+                {% image article_img original class="article_img" %}
               {% else %}
-                {% image article_img fill-600x400 class="article_img" %}
+                <img class="article_img" src="{% static 'images/blog_index_page/article_no_img.png' %}" alt="デフォルト記事画像">
               {% endif %}
             {% endwith %}
           </div>

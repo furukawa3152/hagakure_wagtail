@@ -182,8 +182,17 @@ class BlogPage(Page):
                 'title': 'タイトルは26文字以内で入力してください'
             })
 
-    date = models.DateField("Post date")
-    intro = models.CharField(max_length=250)
+    # サムネイル
+    thumbnail = models.ForeignKey(
+        'wagtailimages.Image',
+        on_delete=models.SET_NULL,
+        related_name='+',
+        max_length=1,
+        blank=True,
+        null=True,
+    )
+
+    # 本文
     body = StreamField([
         ('rich_text', blocks.RichTextBlock(
             features=['h2', 'h3', 'bold', 'italic', 'ol', 'ul', 'embed', 'image', 'link', 'document-link', 'code', 'blockquote'],
@@ -203,20 +212,16 @@ class BlogPage(Page):
         related_name='+'
     )
 
-
     # タグ
     tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
 
-    # ... Keep the main_image method and search_fields definition. Then modify the content_panels:
     content_panels = Page.content_panels + [
         MultiFieldPanel([
-            FieldPanel("date"),
+            FieldPanel('thumbnail', heading='サムネイル'),
             FieldPanel('channel'),
             FieldPanel("tags"),
         ], heading="Blog information"),
-        FieldPanel("intro"),
-        FieldPanel("body"),
-        "gallery_images",
+        FieldPanel("body", heading='本文'),
     ]
 
     # いいねボタンの実装
@@ -228,30 +233,3 @@ class BlogPage(Page):
         return self.like_set.filter(user=user).exists()
 
     # ------いいねボタンここまで
-
-    #
-    def get_first_gallery_image(self):
-        gallery_item = self.gallery_images.first()
-        if gallery_item:
-            return gallery_item.image
-        else:
-            return None
-
-    def get_first_body_image(self):
-        """
-        body内の最初の 'image' ブロックの画像を返す
-        """
-        for block in self.body:
-            if block.block_type == 'image':
-                return block.value['image']  # valueはStructValue({'image': <Image: title>, 'caption': 'キャプション'})
-        return None
-
-class BlogPageGalleryImage(Orderable):
-    page = ParentalKey(BlogPage, on_delete=models.CASCADE, related_name='gallery_images')
-    image = models.ForeignKey(
-        'wagtailimages.Image', on_delete=models.CASCADE, related_name='+'
-    )
-    caption = models.CharField(blank=True, max_length=250)
-
-    panels = ["image", "caption"]
-
