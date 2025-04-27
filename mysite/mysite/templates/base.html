@@ -5,14 +5,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}HAGAKUREプログラミング塾|Scroll{% endblock %}</title>
-  <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
 </head>
 <body>
 
   <header class="header">
     <div class="header_inner">
 
-<!--      <img src="{% static 'image/base/logo.jpg' %}" alt="ロゴ" class="logo">-->
+      <a href="/blog">
+        <img src="{% static 'image/base/scroll_logo.png' %}" alt="scroll_ロゴ" class="logo">
+      </a> 
 
 <!--      <div class="search-bar">-->
 <!--        <input type="text" class="search-input">-->
@@ -49,8 +51,8 @@
         {% endfor %}
       </div>
 
-      <div class="footer_links">
-        <a href="{% url 'blog_guidelines' %}" class="footer_link">ガイドライン</a>
+      <div class="guidelines_links">
+        <a href="{% url 'blog_guidelines' %}" class="guidelines_link">Scroll ガイドライン</a>
       </div>
 
       <div class="footer_copyright">
