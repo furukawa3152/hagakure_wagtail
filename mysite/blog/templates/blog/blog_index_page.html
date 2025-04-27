@@ -4,8 +4,9 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/blog_index_page.css' %}">
   <div class="container">
-    <h2>Scrollは、HAGAKUREプログラミング塾の参加者が運営するブログサイトです。
-    </h2>
+    <div class="summary">
+      <h2>Scrollは、HAGAKUREプログラミング塾の参加者が運営するブログサイトです。</h2>
+    </div>
     <div class="wrapper">
       {% for article in blogpages %}
       <article class="article">
@@ -62,8 +63,7 @@
       <div class="page">
         {% if blogpages.has_previous %}
           <a class="page-prev" href="?page={{ blogpages.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}">前のページへ</a>
-      cd  {% endif %}
-
+        {% endif %}
         {% for i in blogpages.paginator.page_range %}
           {% if blogpages.number == i %}
             <span class="current">{{ i }}</span>

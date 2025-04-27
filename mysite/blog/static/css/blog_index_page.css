@@ -22,21 +22,24 @@ body {
   justify-content: space-between;
 }
 
+/* 概要説明 */
+.summary {
+  margin-top: 80px;
+  text-align: center;
+}
+
 .wrapper::after{
   content:"";
   display: block;
   width:30%;
 }
 
-h2 {
-  text-align: center;
-}
 
 /* 記事_外枠 */
 .article {
   width: 28%;
   height: 100%;
-  margin-top: 150px;
+  margin-top: 120px;
   padding: 10px;
   background-image: url("/static/images/blog_index_page/article_bg.svg");
   border-radius: 20px 20px 0 0;
@@ -162,7 +165,7 @@ h2 {
 
 /* ページ移動 */
 .page {
-  margin: 100px auto 200px;
+  margin: 100px auto 100px;
   padding: 100px 0;
   display: flex;
   justify-content: center;
