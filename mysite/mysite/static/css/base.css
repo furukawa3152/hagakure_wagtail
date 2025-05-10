@@ -42,10 +42,10 @@ html, body {
     drop-shadow(-1px 1px 0 #FEFBF6)
     drop-shadow(1px -1px 0 #FEFBF6)
     drop-shadow(-1px -1px 0 #FEFBF6)
-    drop-shadow(2px 0 0 #FEFBF6)
-    drop-shadow(-2px 0 0 #FEFBF6)
-    drop-shadow(0 2px 0 #FEFBF6)
-    drop-shadow(0 -2px 0 #FEFBF6);
+    drop-shadow(1.1px 0 0 #FEFBF6)
+    drop-shadow(-1.1px 0 0 #FEFBF6)
+    drop-shadow(0 1.1px 0 #FEFBF6)
+    drop-shadow(0 -1.1px 0 #FEFBF6);
 }
 
 /* 検索バーのスタイル */
